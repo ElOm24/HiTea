@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    background-color: #e4d4c8;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+
+header {
+    padding-top: 1.6rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #362314;
+    align-self: center;
+}
+
+span {
+    color: #362314;
+}
+
+h1,
+h2,
+h3 {
+    color: #362314;
+}
+
+button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input:focus {
+    outline: none;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+input[type="radio"]:focus {
+    color: #80669d;
+    outline-color: #80669d;
+}
+
+input[type="radio"] {
+    color: #80669d;
+    outline-color: #80669d;
+}
+
+.main-background {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('../assets/new-bg.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.my-navbar-links a:hover {
+    color: #a47551;
+}
+
+.my-tabs {
+    outline: none;
+    color: #362314;
+}
+
+[role="tab"]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.my-button {
+    background-color: #523a28 !important;
+    outline: none;
+    transition: 0.25s;
+}
+
+.my-button:hover {
+    background-color: #b29b8a !important;
+    outline: none;
+}
+
+.my-pretty-button {
+    background-color: #80669d !important;
+    outline: none;
+}
+
+.my-pretty-button:hover {
+    background-color: #a881af !important;
+    outline: none;
+}
+
+.cart-button {
+    background-color: #046c34 !important;
+    outline: none;
+}
+
+.cart-button:hover {
+    background-color: #04602f !important;
+    outline: none !important;
+}
+
+.cart-button-clear {
+    background-color: #ef4444 !important;
+    outline: none !important;
+}
+
+.cart-button-clear:hover {
+    background-color: #dc2626 !important;
+    outline: none !important;
+}
+
+.cart-button-clear:active {
+    background-color: #9e4d4d !important;
+    outline: none !important;
+}
