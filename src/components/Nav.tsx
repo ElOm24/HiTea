@@ -2,6 +2,7 @@ import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { useLocation } from "react-router-dom";
 import { useUserAuth } from "../context/userAuthContext";
 import { useNavigate } from "react-router-dom";
+import { onIdTokenChanged } from "firebase/auth";
 
 function Nav() {
     const { user, logOut } = useUserAuth();
@@ -63,15 +64,21 @@ function Nav() {
                             <Dropdown.Divider />
                         </>
                     )}
-                    <Dropdown.Item
-                        onClick={() => {
-                            user ? handleSignOut() : navigate("/login");
-                        }}
-                    >
-                        <span>
-                            {user ? "Sign out" : "Login"}
-                        </span>
-                    </Dropdown.Item>
+                    {user ? (
+                        <Dropdown.Item onClick={handleSignOut}>
+                            <span>Sign out</span>
+                        </Dropdown.Item>
+                    ) : (
+                        <>
+                            <Dropdown.Item onClick={() => navigate("/login")}>
+                                <span>Login</span>
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate("/sign-up")}>
+                                <span>Sign up</span>
+                            </Dropdown.Item>
+                        </>
+                    )}
+
                 </Dropdown>
                 <Navbar.Toggle className="text-[#e4d4c8] focus:outline-none focus:ring-0 hover:bg-transparent hover:text-[#d0b49f] transition ml-1" />
             </div>

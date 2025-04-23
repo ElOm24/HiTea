@@ -38,6 +38,7 @@ function Cart() {
         <>
             <div className="fixed bottom-6 right-6 z-50">
                 <button
+                    aria-label="Open Cart"
                     onClick={() => setIsOpen(true)}
                     className={`relative bg-[#80669d] text-white p-4 rounded-full shadow-lg hover:bg-[#a881af] transition ${animateIcon ? "animate-bounce" : ""}`}
                 >
@@ -79,6 +80,7 @@ function Cart() {
                                             <p className="font-semibold">{item.name}</p>
                                             <div className="flex items-center gap-2">
                                                 <button
+                                                    aria-label={`Decrease quantity of ${item.name}`}
                                                     onClick={() => decreaseQuantity(item.id)}
                                                     className="p-1 text-red-500 hover:text-red-600 transition"
                                                 >
@@ -86,15 +88,22 @@ function Cart() {
                                                 </button>
                                                 <span className="w-6 text-center">{item.quantity}</span>
                                                 <button
+                                                    aria-label={`Increase quantity of ${item.name}`}
                                                     onClick={() => increaseQuantity(item.id)}
                                                     className="p-1 text-green-500 hover:text-green-600 transition"
                                                 >
                                                     <FaPlusCircle size={18} />
                                                 </button>
                                             </div>
-
                                         </div>
-                                        <p className="text-sm text-gray-600">
+
+                                        <p className="text-sm text-gray-500">Size: {item.size}</p>
+                                        <p className="text-sm text-gray-500">Temp: {item.temperature}</p>
+                                        <p className="text-sm text-gray-500">
+                                            Toppings: {item.toppings.length > 0 ? item.toppings.join(", ") : "none"}
+                                        </p>
+
+                                        <p className="text-sm text-gray-600 mt-1">
                                             {item.quantity} x {item.price} = <strong>{item.quantity * item.price} ft</strong>
                                         </p>
                                     </li>

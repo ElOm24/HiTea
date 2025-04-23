@@ -14,7 +14,7 @@ function LoginPage() {
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    const { logIn, googleSignIn } = useUserAuth();
+    const { logIn, googleSignIn, logOut } = useUserAuth();
     const navigate = useNavigate();
 
     const handleSignUp = () => {
@@ -27,18 +27,25 @@ function LoginPage() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         try {
             const userCredential = await logIn(email, password);
-            console.log("User logged in successfully:", userCredential.user);
+            const user = userCredential.user;
 
+            if (!user.emailVerified) {
+                setErrorMessage("Please verify your email before logging in.");
+                await logOut();
+                return;
+            }
+
+            console.log("User logged in successfully:", user);
             setSuccessMessage("User logged in successfully.");
             setErrorMessage("");
-
             navigate("/menu");
         } catch (error) {
             console.error("Error logging in:", error);
-
             const authError = error as AuthError;
+
             if (authError.code === "auth/wrong-password") {
                 setErrorMessage("Wrong password, try again.");
             } else {
@@ -48,6 +55,7 @@ function LoginPage() {
             setSuccessMessage("");
         }
     };
+
 
     return (
         <main className="main-background">

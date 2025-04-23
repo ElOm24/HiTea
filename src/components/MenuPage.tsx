@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../libs/firebase";
-import { Button, Label, TextInput } from "flowbite-react";
+import { Button, Label, Textarea, TextInput } from "flowbite-react";
 import Cart from "./Cart";
 import MenuItem from "./MenuItem";
 import FloatingTimerButton from "../components/FloatingTimerButton";
@@ -112,24 +112,24 @@ function MenuPage() {
       {showDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-[#e4d4c8] p-6 rounded-md w-[400px] shadow-lg">
-            <h2 className="text-lg font-semibold mb-4 self-center text-[#523a28]">{editing ? "Edit" : "Add"} Bubble Tea</h2>
-            <Label className="p-2 text-[#523a28]">Image id</Label>
+            <h2 className="text-lg font-semibold mb-4 self-center text-[#362314]">{editing ? "Edit" : "Add"} Bubble Tea</h2>
+            <Label className="p-2 text-[#362314]">Image id</Label>
             <TextInput
               placeholder="Image ID (e.g., 1, 2)"
-              className="p-2 w-full mb-2 text-[#523a28]"
+              className="p-2 w-full mb-2 text-[#362314]"
               value={newItem.id}
               onChange={(e) => setNewItem({ ...newItem, id: e.target.value })}
             />
 
-            <Label className="p-2 text-[#523a28]">Product name</Label>
+            <Label className="p-2 text-[#362314]">Product name</Label>
             <TextInput
               placeholder="Product name"
-              className="p-2 w-full mb-2 text-[#523a28]"
+              className="p-2 w-full mb-2 text-[#362314]"
               value={newItem.ProductName}
               onChange={(e) => setNewItem({ ...newItem, ProductName: e.target.value })}
             />
 
-            <Label className="p-2 text-[#523a28]">Price</Label>
+            <Label className="p-2 text-[#362314]">Price</Label>
             <TextInput
               placeholder="Price"
               className="p-2 w-full mb-2"
@@ -137,10 +137,10 @@ function MenuPage() {
               onChange={(e) => setNewItem({ ...newItem, Price: e.target.value })}
             />
 
-            <Label className="p-2 text-[#523a28]">Description</Label>
-            <TextInput id="large" sizing="lg"
+            <Label className="p-2 text-[#362314]">Description</Label>
+            <Textarea id="large"
               placeholder="Description"
-              className="p-2 w-full mb-4"
+              className="p-2 mb-4 ml-2"
               value={newItem.description}
               onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
             />
@@ -150,13 +150,14 @@ function MenuPage() {
                 onClick={() => setShowDialog(false)}
                 className="my-button"
               >
-                Cancel
+                <span className="text-[#f4e9e1]">Cancel</span>
               </Button>
               <Button
                 onClick={handleAddItem}
-                className="my-button"
+                className="my-pretty-button"
               >
-                {editing ? "Save Changes" : "Add"}
+
+                {editing ? <span className="text-[#f4e9e1]">Save Changes</span> : <span className="text-[#f4e9e1]">Add</span>}
               </Button>
             </div>
           </div>

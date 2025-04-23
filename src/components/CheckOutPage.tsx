@@ -79,26 +79,51 @@ function CheckOutPage() {
                 return;
             }
 
-            await addDoc(collection(db, "ordersHistory"), {
+            // in CheckOutPage.handlePlaceOrder:
+            const ordersRef = collection(db, "ordersHistory");
+            const orderData = {
                 uid: user.uid,
                 email: user.email,
                 name: user.displayName || "Unknown",
                 delivery: isDeliverySelected,
                 pickUp: isPickUpSelected,
                 pickupLocation: isPickUpSelected ? pickupLocation || null : null,
-                items: cartItems.map(item => `${item.name}: ${item.quantity}`).join(", "),
+                items: cartItems.map(item => ({
+                    name: item.name,
+                    size: item.size,
+                    toppings: item.toppings,
+                    temperature: item.temperature,
+                    quantity: item.quantity,
+                })),
                 card: isCardPayment,
                 cash: isCashPayment,
                 orderDate: new Date(),
                 total: calculatedTotal,
                 address: isDeliverySelected ? address : null,
-            });
+            };
+
+            // addDoc returns a DocumentReference, whose .id is your new order’s ID
+            const orderRef = await addDoc(ordersRef, orderData);
+
+            // store an end time under a unique key
+            const now = Date.now();
+            const endTime = now + deliveryTime * 60 * 1000;
+            const timerData = {
+                endTime,
+                isDelivery: isDeliverySelected,   // true for delivery, false for pickup
+            };
+            localStorage.setItem(
+                `timer_${orderRef.id}`,
+                JSON.stringify(timerData)
+            );
 
 
+            // then navigate, passing along the orderId so we know which keys to look for
             clearCart();
             navigate("/delivery-timer", {
-                state: { deliveryTime, delivery: isDeliverySelected, },
+                state: { justPlacedOrderId: orderRef.id },
             });
+
 
         } catch (error) {
             console.error("Error placing order:", error);
@@ -123,12 +148,20 @@ function CheckOutPage() {
                     <span className="mb-2 font-semibold">Your Order:</span>
                     <ul className="divide-y">
                         {cartItems.map((item, index) => (
-                            <li key={index} className="py-2 flex justify-between">
-                                <span>{item.name} x {item.quantity}</span>
-                                <span>{item.price * item.quantity} ft</span>
+                            <li key={index} className="py-2">
+                                <div className="flex justify-between font-semibold">
+                                    <span>{item.name} x {item.quantity}</span>
+                                    <span>{item.price * item.quantity} ft</span>
+                                </div>
+                                <div className="text-sm text-gray-600 pl-1 mt-1 space-y-0.5">
+                                    <p>Size: {item.size}</p>
+                                    <p>Temperature: {item.temperature}</p>
+                                    <p>Toppings: {item.toppings.length > 0 ? item.toppings.join(", ") : "none"}</p>
+                                </div>
                             </li>
                         ))}
                     </ul>
+
                     <div className="mt-2 text-lg text-right">
                         <span>
                             Total: {total} ft

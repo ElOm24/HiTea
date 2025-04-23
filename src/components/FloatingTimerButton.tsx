@@ -2,40 +2,41 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaClock } from "react-icons/fa";
 
-function FloatingTimerButton() {
+export default function FloatingTimerButton() {
     const navigate = useNavigate();
-    const [showButton, setShowButton] = useState(false);
+    const [hasTimers, setHasTimers] = useState(false);
 
+    // helper to re-scan localStorage
+    const scan = () => {
+        const keys = Object.keys(localStorage).filter((k) =>
+            k.startsWith("timer_")
+        );
+        setHasTimers(keys.length > 0);
+    };
+
+    // scan on mount
+    useEffect(scan, []);
+
+    // re-scan whenever storage changes in another tab
     useEffect(() => {
-        const interval = setInterval(() => {
-            const stored = localStorage.getItem("deliveryEndTime");
-            if (!stored) {
-                setShowButton(false);
-                return;
+        const onStorage = (e: StorageEvent) => {
+            if (!e.key || e.key.startsWith("timer_")) {
+                scan();
             }
-
-            const endTime = parseInt(stored);
-            const now = new Date().getTime();
-            const timeLeft = endTime - now;
-
-            setShowButton(timeLeft > 0);
-        }, 1000);
-
-        return () => clearInterval(interval);
+        };
+        window.addEventListener("storage", onStorage);
+        return () => window.removeEventListener("storage", onStorage);
     }, []);
 
-    if (!showButton) return null;
+    if (!hasTimers) return null;
 
     return (
         <button
             onClick={() => navigate("/delivery-timer")}
-            className="fixed bottom-24 right-6 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-[#e0c49b] shadow-lg animate-pulse hover:scale-110 transition-transform"
-            title="Return to timer"
+            className=" fixed bottom-24 right-6 z-40 bg-yellow-500 text-white p-4 rounded-full shadow-lg hover:bg-yellow-600 transition animate-pulse"
+            aria-label="View active timers"
         >
-            <FaClock className="text-[#523a28] text-xl" />
+            <FaClock size={24} />
         </button>
-
     );
 }
-
-export default FloatingTimerButton;

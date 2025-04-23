@@ -6,6 +6,9 @@ type CartItem = {
     name: string;
     price: number;
     quantity: number;
+    size: "small" | "medium" | "large";
+    temperature: "hot" | "no ice" | "with ice";
+    toppings: string[];
 };
 
 type CartContextType = {
