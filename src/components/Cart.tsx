@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
 
-
 function Cart() {
-
     const {
         cartItems,
         clearCart,
@@ -113,7 +111,6 @@ function Cart() {
                         )}
                     </div>
 
-                    {/* Bottom Actions */}
                     {cartItems.length > 0 && (
                         <div className="flex flex-col gap-2">
                             <Button

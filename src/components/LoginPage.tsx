@@ -56,7 +56,6 @@ function LoginPage() {
         }
     };
 
-
     return (
         <main className="main-background">
             <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md">
@@ -158,6 +157,4 @@ function LoginPage() {
             </div>
         </main>
     );
-}
-
-export default LoginPage;
+} export default LoginPage;

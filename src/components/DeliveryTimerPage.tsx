@@ -14,7 +14,7 @@ type Timer = {
     isDelivery: boolean;
 };
 
-export default function DeliveryTimerPage() {
+function DeliveryTimerPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const state = (location.state ?? {}) as LocationState;
@@ -22,18 +22,15 @@ export default function DeliveryTimerPage() {
     const [timers, setTimers] = useState<Timer[]>([]);
 
     useEffect(() => {
-        // 1️⃣ find all timer_ keys
         const storedKeys = Object.keys(localStorage).filter((k) =>
             k.startsWith("timer_")
         );
 
-        // 2️⃣ if none and no incoming order, back to menu
         if (!state.justPlacedOrderId && storedKeys.length === 0) {
             navigate("/menu");
             return;
         }
 
-        // 3️⃣ initialize timers
         const initial: Timer[] = storedKeys.map((key) => {
             const orderId = key.replace("timer_", "");
             const data = JSON.parse(localStorage.getItem(key)!);
@@ -50,7 +47,6 @@ export default function DeliveryTimerPage() {
         });
         setTimers(initial);
 
-        // 4️⃣ tick every second, updating timeLeft & timeUp
         const interval = setInterval(() => {
             setTimers((prev) =>
                 prev.map((t) => {
@@ -58,7 +54,6 @@ export default function DeliveryTimerPage() {
                         Math.floor((t.endTime - Date.now()) / 1000),
                         0
                     );
-                    // when it first hits zero, clear localStorage
                     if (diff === 0 && !t.timeUp) {
                         localStorage.removeItem(`timer_${t.orderId}`);
                     }
@@ -85,15 +80,11 @@ export default function DeliveryTimerPage() {
                 const seconds = (timeLeft % 60).toString().padStart(2, "0");
                 const formattedTime = `${minutes}:${seconds}`;
 
-                // unified close handler:
                 const handleClose = () => {
-                    // drop from state
                     setTimers((ts) =>
                         ts.filter((t) => t.orderId !== orderId)
                     );
-                    // clear storage
                     localStorage.removeItem(`timer_${orderId}`);
-                    // if it's a finished timer, go back to menu
                     if (timeUp) navigate("/menu");
                 };
 
@@ -147,4 +138,4 @@ export default function DeliveryTimerPage() {
             })}
         </main>
     );
-}
+} export default DeliveryTimerPage;

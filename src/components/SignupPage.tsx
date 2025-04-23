@@ -82,7 +82,6 @@ function SignupPage() {
         <main className="main-background">
             <header className="mb-6">Sign Up</header>
 
-            {/* Verification Message */}
             {emailSent ? (
                 <div className="bg-green-100 border border-green-300 text-green-900 p-6 rounded-lg shadow-md w-full max-w-md text-center">
                     <h2 className="text-lg font-semibold mb-2">Please check your verification email.</h2>

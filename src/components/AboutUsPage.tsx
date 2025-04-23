@@ -84,7 +84,6 @@ function AboutUsPage() {
                     </div>
                 </div>
             </div>
-
         </main >
     );
 }

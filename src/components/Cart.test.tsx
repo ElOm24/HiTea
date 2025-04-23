@@ -1,12 +1,11 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { within } from "@testing-library/react";
 
 import Cart from "./Cart";
-import '@testing-library/jest-dom';
 
-// Mock CartContext
 const mockClearCart = vi.fn();
 const mockIncreaseQuantity = vi.fn();
 const mockDecreaseQuantity = vi.fn();
@@ -30,7 +29,6 @@ vi.mock("../context/CartContext", () => ({
     }),
 }));
 
-// Mock navigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async (importOriginal) => {
     const actual = await importOriginal() as Record<string, unknown>;
@@ -59,7 +57,6 @@ describe("Cart Component", () => {
         const cartButton = screen.getByLabelText("Open Cart");
         expect(cartButton).toBeInTheDocument();
 
-        // 👇 This checks inside the cart button specifically
         expect(within(cartButton).getByText("2")).toBeInTheDocument();
     });
 
@@ -72,7 +69,7 @@ describe("Cart Component", () => {
 
     it("calls increase and decrease functions when buttons are clicked", () => {
         renderCart();
-        fireEvent.click(screen.getByLabelText("Open Cart")); // open cart
+        fireEvent.click(screen.getByLabelText("Open Cart"));
 
         fireEvent.click(screen.getByLabelText("Increase quantity of Mango Tea"));
         expect(mockIncreaseQuantity).toHaveBeenCalledWith("1");
@@ -84,7 +81,7 @@ describe("Cart Component", () => {
 
     it("calls clearCart when Clear Cart button is clicked", () => {
         renderCart();
-        fireEvent.click(screen.getByLabelText("Open Cart")); //
+        fireEvent.click(screen.getByLabelText("Open Cart"));
 
         const clearButton = screen.getByRole("button", { name: /clear cart/i });
         fireEvent.click(clearButton);
@@ -94,7 +91,7 @@ describe("Cart Component", () => {
 
     it("navigates to /check-out when Checkout button is clicked", () => {
         renderCart();
-        expect(screen.getByLabelText("Open Cart")).toBeInTheDocument(); // ✅ safe and specific
+        expect(screen.getByLabelText("Open Cart")).toBeInTheDocument();
 
         const checkoutButton = screen.getByRole("button", { name: /checkout/i });
         fireEvent.click(checkoutButton);

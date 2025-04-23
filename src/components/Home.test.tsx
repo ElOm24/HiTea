@@ -1,10 +1,8 @@
-// src/components/Home.test.tsx
-import React from 'react'
+import '@testing-library/jest-dom'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
+import React from 'react'
 
-// 1️⃣ Mock flowbite-react's Carousel so it just renders its children
 vi.mock('flowbite-react', () => ({
     Carousel: ({ children }: { children: React.ReactNode }) => (
         <div data-testid="carousel">{children}</div>
@@ -25,15 +23,12 @@ describe('Home component', () => {
     it('renders exactly five offer images with correct alts and srcs', () => {
         render(<Home />)
 
-        // All five <img> should be in the carousel
         const images = screen.getAllByRole('img')
         expect(images).toHaveLength(5)
 
-        // Check alt attributes
         const expectedAlts = ['offer1', 'offer2', 'offer3', 'offer4', 'offer5']
         expect(images.map((img) => img.getAttribute('alt'))).toEqual(expectedAlts)
 
-        // Check src attributes include the right filenames
         expectedAlts.forEach((alt) => {
             const img = screen.getByAltText(alt)
             expect(img).toHaveAttribute('src', expect.stringContaining(`${alt}.png`))

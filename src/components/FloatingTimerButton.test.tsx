@@ -1,9 +1,8 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import '@testing-library/jest-dom';
 
-// Mock useNavigate before importing the component
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
     const actual = await import('react-router-dom');
@@ -61,9 +60,7 @@ describe('FloatingTimerButton', () => {
 
 
 /*
-This file is an integration test that checks if the FloatingTimerButton:
-
-shows/hides based on localStorage,
-
+Integration test that checks if the FloatingTimerButton:
+shows/hides based on localStorage
 and correctly redirects the user when clicked.
 */

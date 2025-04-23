@@ -1,16 +1,7 @@
-// src/components/DeliveryTimerPage.test.tsx
-import React from 'react'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import {
-    render,
-    screen,
-    fireEvent,
-    act,
-    cleanup,           // ← unmounts & runs effect cleanups
-} from '@testing-library/react'
 import '@testing-library/jest-dom'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
 
-// 1️⃣ Mock react-router before importing the component
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
     const actual = (await vi.importActual('react-router-dom')) as any
@@ -45,14 +36,10 @@ describe('DeliveryTimerPage', () => {
     beforeEach(() => {
         localStorage.clear()
         mockNavigate.mockClear()
-        // ensure any prior fake timers are reset
         vi.useRealTimers()
     })
 
     afterEach(() => {
-        // 1) unmounts the React tree, which runs your effect cleanup → clears the interval  
-        // 2) kills any timers (just in case)  
-        // 3) restores real timers for the next test
         cleanup()
         vi.clearAllTimers()
         vi.useRealTimers()
@@ -77,7 +64,6 @@ describe('DeliveryTimerPage', () => {
     it('removes timer and navigates back on close if time is up', () => {
         createTimer('order1', 0)
 
-        // use fake timers here so we can immediately tick the 1s interval
         vi.useFakeTimers()
 
         renderPage()
@@ -86,7 +72,6 @@ describe('DeliveryTimerPage', () => {
             vi.advanceTimersByTime(1000)
         })
 
-        // after that tick, timeUp===true and we should see the "arrived" UI
         expect(screen.getByText(/order has arrived!/i)).toBeInTheDocument()
 
         fireEvent.click(screen.getByRole('button', { name: '✕' }))

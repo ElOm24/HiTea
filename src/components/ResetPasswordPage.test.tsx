@@ -1,13 +1,10 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import ResetPasswordPage from "./ResetPasswordPage";
-import '@testing-library/jest-dom';
-
-// ✅ Directly import the function to mock it
 import * as firebaseAuth from "firebase/auth";
 
-// Mock the function BEFORE tests
 vi.mock("firebase/auth", async (importOriginal) => {
     const actual = await importOriginal() as Record<string, unknown>;
     return {

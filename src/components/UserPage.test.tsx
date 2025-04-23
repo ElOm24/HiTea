@@ -1,18 +1,15 @@
-// src/components/UserPage.test.tsx
-// src/components/UserPage.test.tsx
+
 import React from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { MemoryRouter } from 'react-router-dom'
 
-// ─── 0️⃣ MOCK YOUR FIREBASE INIT ─────────────────────────────
 vi.mock('../libs/firebase', () => ({
     auth: { currentUser: { reload: vi.fn() } },
     db: {},
 }))
 
-// ─── 1️⃣ MOCK FIRESTORE ───────────────────────────────────────
 vi.mock('firebase/firestore', () => ({
     getFirestore: vi.fn(),
     doc: vi.fn(),
@@ -30,11 +27,9 @@ vi.mock('firebase/firestore', () => ({
     collection: vi.fn(),
     query: vi.fn(),
     where: vi.fn(),
-    // no onSnapshot callback to avoid infinite loops
     onSnapshot: vi.fn(() => () => { }),
 }))
 
-// ─── 2️⃣ MOCK AUTH ────────────────────────────────────────────
 vi.mock('firebase/auth', () => ({
     getAuth: vi.fn(),
     onAuthStateChanged: vi.fn((_, cb) => {
@@ -48,7 +43,6 @@ vi.mock('firebase/auth', () => ({
     updateProfile: vi.fn(() => Promise.resolve()),
 }))
 
-// ─── 3️⃣ STUB CONTEXT PROVIDERS ───────────────────────────────
 vi.mock('../context/userAuthContext', () => ({
     useUserAuth: () => ({
         user: {
@@ -66,7 +60,6 @@ vi.mock('../context/CartContext', () => ({
     CartProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-// ─── 4️⃣ MOCK FLOWBITE & ICONS ────────────────────────────────
 vi.mock('flowbite-react', () => ({
     Label: ({ children }: any) => <label>{children}</label>,
     TextInput: (props: any) => <input {...props} />,
@@ -80,7 +73,6 @@ vi.mock('react-icons/fa', () => ({
     FaPhoneAlt: () => <span data-testid="icon-phone" />,
 }))
 
-// ─── 5️⃣ IMPORT YOUR COMPONENT UNDER TEST ────────────────────
 import { UserAuthProvider } from '../context/userAuthContext'
 import { CartProvider } from '../context/CartContext'
 import UserPage from './UserPage'
@@ -101,15 +93,12 @@ describe('UserPage – Functional Test', () => {
             </MemoryRouter>
         )
 
-        // 1) Should see mocked profile data:
         expect(await screen.findByText(/Mock Name/i)).toBeInTheDocument()
         expect(screen.getByText('123')).toBeInTheDocument()
         expect(screen.getByText(/Mock Street/i)).toBeInTheDocument()
 
-        // 2) Click "Edit Profile"
         fireEvent.click(screen.getByRole('button', { name: /Edit Profile/i }))
 
-        // 3) Now at least three text inputs should be on screen (name, phone, address)
         const inputs = await screen.findAllByRole('textbox')
         expect(inputs.length).toBeGreaterThanOrEqual(3)
     })

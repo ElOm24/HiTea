@@ -77,7 +77,6 @@ function MenuItem({
         setOpenModal(false);
     };
 
-
     return (
         <div>
             <Card>

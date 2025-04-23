@@ -1,25 +1,10 @@
-// src/pages/ContactPage.tsx
-
-import {
-    Alert,
-    Button,
-    Card,
-    Label,
-    Modal,
-    Textarea,
-} from "flowbite-react";
+import { Alert, Button, Card, Label, Modal, Textarea } from "flowbite-react";
 import { Tabs } from "flowbite-react";
 import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { useUserAuth } from "../context/userAuthContext";
 import { db } from "../libs/firebase";
-import {
-    addDoc,
-    collection,
-    getDocs,
-    query,
-    where
-} from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 interface RatingDoc {
     id: string;
@@ -33,27 +18,22 @@ interface RatingDoc {
 function ContactPage() {
     const { user } = useUserAuth();
 
-    // rating modal state
     const [openRatingModal, setOpenRatingModal] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState("");
     const [selectedRating, setSelectedRating] = useState(0);
     const [hoveredRating, setHoveredRating] = useState(0);
     const [reviewDescription, setReviewDescription] = useState("");
 
-    // reviews list modal state
     const [openReviewsModal, setOpenReviewsModal] = useState(false);
     const [reviewsList, setReviewsList] = useState<RatingDoc[]>([]);
     const [listLocation, setListLocation] = useState("");
 
-    // success alert
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
-    // average ratings per location
     const [averageRatings, setAverageRatings] = useState<{
         [loc: string]: number;
     }>({});
 
-    // fetch average star per location
     const fetchAverages = async () => {
         const locs = ["Astoria", "Oktogon", "Buda"];
         const map: { [loc: string]: number } = {};
@@ -75,7 +55,6 @@ function ContactPage() {
         fetchAverages();
     }, []);
 
-    // open rating modal
     const handleRateClick = (loc: string) => {
         setSelectedLocation(loc);
         setSelectedRating(0);
@@ -84,7 +63,6 @@ function ContactPage() {
         setOpenRatingModal(true);
     };
 
-    // submit new rating
     const handleSubmitRating = async () => {
         if (!user || !selectedLocation || selectedRating === 0) return;
         try {
@@ -105,19 +83,16 @@ function ContactPage() {
         }
     };
 
-    // open reviews list modal
     const handleSeeReviews = async (loc: string) => {
         setListLocation(loc);
         setOpenReviewsModal(true);
 
-        // fetch *all* reviews for this location
         const q = query(
             collection(db, "ratings"),
             where("location", "==", loc)
         );
         const snap = await getDocs(q);
 
-        // map into our array
         const docs: RatingDoc[] = snap.docs.map((d) => {
             const data = d.data() as any;
             return {
@@ -130,7 +105,6 @@ function ContactPage() {
             };
         });
 
-        // sort newest-first by ISO date string
         docs.sort((a, b) => {
             return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
@@ -138,7 +112,6 @@ function ContactPage() {
         setReviewsList(docs);
     };
 
-    // star-renderer
     const renderStars = (
         value: number,
         setter: (v: number) => void,
@@ -252,7 +225,6 @@ function ContactPage() {
                 </Tabs>
             </main>
 
-            {/* Rating Modal */}
             <Modal
                 show={openRatingModal}
                 onClose={() => setOpenRatingModal(false)}
@@ -289,7 +261,6 @@ function ContactPage() {
                 </Modal.Footer>
             </Modal>
 
-            {/* Reviews List Modal */}
             <Modal
                 show={openReviewsModal}
                 onClose={() => setOpenReviewsModal(false)}
@@ -299,7 +270,6 @@ function ContactPage() {
                     <span>Reviews for {listLocation}</span>
                 </Modal.Header>
 
-                {/* Move your max-h and overflow here */}
                 <Modal.Body className="max-h-96 overflow-y-auto space-y-4 text-[#362314]">
                     {reviewsList.length === 0 ? (
                         <p>No reviews yet.</p>

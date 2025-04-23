@@ -1,5 +1,3 @@
-// src/pages/UserPage.tsx
-
 import { Label, TextInput, Button, Alert } from "flowbite-react";
 import { updateProfile } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -48,7 +46,6 @@ function UserPage() {
     useEffect(() => {
         if (!user) return;
 
-        // Load profile from Firestore
         (async () => {
             const userRef = doc(db, "users", user.uid);
             const snap = await getDoc(userRef);
@@ -66,7 +63,6 @@ function UserPage() {
             }
         })();
 
-        // Subscribe to orders in real time
         const q = query(
             collection(db, "ordersHistory"),
             where("uid", "==", user.uid)
@@ -95,17 +91,13 @@ function UserPage() {
         return () => unsub();
     }, [user]);
 
-    // This is now actually used in the JSX below
     const handleProfileUpdate = async () => {
         if (!user) return;
         try {
-            // 1) Auth profile
             await updateProfile(user, { displayName: name });
             await auth.currentUser?.reload();
-            // 2) Firestore profile
             const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, { displayName: name, phone, address });
-            // 3) Refresh context and UI
             setUser(auth.currentUser!);
             setShowAlert(true);
             setIsEditing(false);
@@ -132,7 +124,6 @@ function UserPage() {
                 )}
 
                 <div className="flex flex-col md:flex-row gap-6">
-                    {/* PROFILE PANEL */}
                     <div className="flex-1">
                         {!isEditing ? (
                             <div className="p-6 bg-[#e4d4c8] rounded shadow-md text-[#362314] space-y-2">
@@ -215,7 +206,6 @@ function UserPage() {
                         )}
                     </div>
 
-                    {/* ORDER HISTORY */}
                     <aside className="w-full md:w-[360px] bg-[#e4d4c8] p-4 rounded shadow-md text-[#362314] h-[600px] flex flex-col">
                         <h3 className="text-lg font-semibold mb-4">Order History</h3>
                         {orders.length === 0 ? (

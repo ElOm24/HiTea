@@ -47,7 +47,7 @@ function Nav() {
                     }
                 >
                     {user && (
-                        <>
+                        <div>
                             <Dropdown.Header>
                                 <span className="block truncate text-sm font-medium">
                                     {user.email}
@@ -62,21 +62,21 @@ function Nav() {
                                 </span>
                             </Dropdown.Item>
                             <Dropdown.Divider />
-                        </>
+                        </div>
                     )}
                     {user ? (
                         <Dropdown.Item onClick={handleSignOut}>
                             <span>Sign out</span>
                         </Dropdown.Item>
                     ) : (
-                        <>
+                        <div>
                             <Dropdown.Item onClick={() => navigate("/login")}>
                                 <span>Login</span>
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => navigate("/sign-up")}>
                                 <span>Sign up</span>
                             </Dropdown.Item>
-                        </>
+                        </div>
                     )}
 
                 </Dropdown>

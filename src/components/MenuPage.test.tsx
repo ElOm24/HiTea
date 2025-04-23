@@ -1,10 +1,10 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { UserAuthProvider } from '../context/userAuthContext';
 import { CartProvider } from '../context/CartContext';
 import MenuPage from './MenuPage';
-import '@testing-library/jest-dom';
 
 vi.mock('firebase/firestore', async (importOriginal) => {
     const actual = await importOriginal() as Record<string, unknown>;
@@ -42,13 +42,10 @@ describe('MenuPage - Admin Add Item', () => {
             </BrowserRouter>
         );
 
-        // 🟢 Open the "Add Bubble Tea" modal
         fireEvent.click(screen.getByRole('button', { name: /Add Bubble Tea/i }));
 
-        // 🟢 Modal heading should appear
         expect(await screen.findByRole('heading', { name: /Add Bubble Tea/i })).toBeInTheDocument();
 
-        // 🟢 Fill the fields
         fireEvent.change(screen.getByPlaceholderText(/Image ID/i), {
             target: { value: '1' },
         });
@@ -62,10 +59,8 @@ describe('MenuPage - Admin Add Item', () => {
             target: { value: 'Sweet tropical mango tea' },
         });
 
-        // 🟢 Click the correct "Add" button (last one)
         fireEvent.click(screen.getAllByRole('button', { name: /Add/i }).at(-1)!);
 
-        // 🟢 Modal should disappear
         await waitFor(() => {
             expect(screen.queryByRole('heading', { name: /Add Bubble Tea/i })).not.toBeInTheDocument();
         });

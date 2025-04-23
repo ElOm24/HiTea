@@ -6,7 +6,6 @@ export default function FloatingTimerButton() {
     const navigate = useNavigate();
     const [hasTimers, setHasTimers] = useState(false);
 
-    // helper to re-scan localStorage
     const scan = () => {
         const keys = Object.keys(localStorage).filter((k) =>
             k.startsWith("timer_")
@@ -14,10 +13,8 @@ export default function FloatingTimerButton() {
         setHasTimers(keys.length > 0);
     };
 
-    // scan on mount
     useEffect(scan, []);
 
-    // re-scan whenever storage changes in another tab
     useEffect(() => {
         const onStorage = (e: StorageEvent) => {
             if (!e.key || e.key.startsWith("timer_")) {

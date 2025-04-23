@@ -1,25 +1,20 @@
+import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import SignupPage from "./SignupPage";
 import { BrowserRouter } from "react-router-dom";
 import { UserAuthProvider } from "../context/userAuthContext";
-import '@testing-library/jest-dom';
+import SignupPage from "./SignupPage";
 
-// ✅ Mock sendEmailVerification directly (no importActual)
 vi.mock("firebase/auth", async (importOriginal) => {
     const actual = await importOriginal<typeof import("firebase/auth")>();
     return {
         ...actual,
         sendEmailVerification: vi.fn(() => Promise.resolve()),
         getAuth: vi.fn(() => ({})),
-        onIdTokenChanged: vi.fn(() => () => { }), // 👈 mock the token change listener
+        onIdTokenChanged: vi.fn(() => () => { }),
     };
 });
 
-
-
-
-// ✅ Mock useUserAuth statically (no async or importActual)
 vi.mock("../context/userAuthContext", async (importOriginal) => {
     const actual = await importOriginal<typeof import("../context/userAuthContext")>();
     return {
@@ -47,7 +42,6 @@ describe("SignupPage - Functional Test", () => {
             </BrowserRouter>
         );
 
-        // Fill out the form
         fireEvent.change(screen.getByLabelText(/your email/i), {
             target: { value: "test@example.com" },
         });
@@ -55,10 +49,8 @@ describe("SignupPage - Functional Test", () => {
             target: { value: "password123" },
         });
 
-        // Click Submit
         fireEvent.click(screen.getByRole("button", { name: /submit/i }));
 
-        // Wait for success message
         await waitFor(() => {
             expect(
                 screen.getByText(/please check your verification email/i)

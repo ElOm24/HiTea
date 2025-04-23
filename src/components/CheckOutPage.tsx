@@ -79,7 +79,6 @@ function CheckOutPage() {
                 return;
             }
 
-            // in CheckOutPage.handlePlaceOrder:
             const ordersRef = collection(db, "ordersHistory");
             const orderData = {
                 uid: user.uid,
@@ -102,15 +101,13 @@ function CheckOutPage() {
                 address: isDeliverySelected ? address : null,
             };
 
-            // addDoc returns a DocumentReference, whose .id is your new order’s ID
             const orderRef = await addDoc(ordersRef, orderData);
 
-            // store an end time under a unique key
             const now = Date.now();
             const endTime = now + deliveryTime * 60 * 1000;
             const timerData = {
                 endTime,
-                isDelivery: isDeliverySelected,   // true for delivery, false for pickup
+                isDelivery: isDeliverySelected,
             };
             localStorage.setItem(
                 `timer_${orderRef.id}`,
@@ -118,7 +115,6 @@ function CheckOutPage() {
             );
 
 
-            // then navigate, passing along the orderId so we know which keys to look for
             clearCart();
             navigate("/delivery-timer", {
                 state: { justPlacedOrderId: orderRef.id },
@@ -304,6 +300,4 @@ function CheckOutPage() {
             </div>
         </main >
     );
-}
-
-export default CheckOutPage;
+} export default CheckOutPage;
