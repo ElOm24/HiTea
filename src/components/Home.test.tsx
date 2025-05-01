@@ -12,7 +12,7 @@ vi.mock('flowbite-react', () => ({
 import Home from './Home'
 
 describe('Home component', () => {
-    it('renders the welcome header and section title', () => {
+    it('renders the header and section name', () => {
         render(<Home />)
         expect(screen.getByText('Welcome to HiTea!')).toBeInTheDocument()
         expect(
@@ -20,7 +20,7 @@ describe('Home component', () => {
         ).toBeInTheDocument()
     })
 
-    it('renders exactly five offer images with correct alts and srcs', () => {
+    it('renders 5 offer images with correct alts and srcs', () => {
         render(<Home />)
 
         const images = screen.getAllByRole('img')

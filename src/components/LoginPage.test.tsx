@@ -29,8 +29,7 @@ vi.mock('../context/userAuthContext', () => ({
     UserAuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
-
-describe('LoginPage – functional Google and email sign-in', () => {
+describe('LoginPage, Google and email sign-in', () => {
     beforeEach(() => {
         mockNavigate.mockClear()
         mockGoogleSignIn.mockClear()
@@ -40,15 +39,12 @@ describe('LoginPage – functional Google and email sign-in', () => {
 
     it('calls googleSignIn and navigates to MenuPage on success', async () => {
         mockGoogleSignIn.mockResolvedValueOnce({ user: { emailVerified: true } })
-
         render(
             <MemoryRouter>
                 <LoginPage />
             </MemoryRouter>
         )
-
         fireEvent.click(screen.getByRole('button', { name: /sign in with google/i }))
-
         await waitFor(() => {
             expect(mockGoogleSignIn).toHaveBeenCalled()
             expect(mockNavigate).toHaveBeenCalledWith('/menu')
@@ -74,7 +70,6 @@ describe('LoginPage – functional Google and email sign-in', () => {
 
     it('allows user to type email/password and submit', async () => {
         mockLogIn.mockResolvedValueOnce({ user: { emailVerified: true } })
-
         render(
             <MemoryRouter>
                 <LoginPage />
