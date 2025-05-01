@@ -49,7 +49,7 @@ function ResetPasswordPage() {
                 )}
             </div>
 
-            <header>Reset Password</header>
+            <h1>Reset Password</h1>
 
             <div className="w-2/5 max-w-sm mx-auto mt-6">
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act, cleanup } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 const mockNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -45,7 +45,7 @@ describe('DeliveryTimerPage', () => {
         vi.useRealTimers()
     })
 
-    it('redirects to /menu if no timers and no justPlacedOrderId', () => {
+    it('redirects to MenuPage if no timers and no justPlacedOrderId', () => {
         renderPage()
         expect(mockNavigate).toHaveBeenCalledWith('/menu')
     })

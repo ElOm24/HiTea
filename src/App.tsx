@@ -15,7 +15,6 @@ import CheckOutPage from './components/CheckOutPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
 import DeliveryTimerPage from './components/DeliveryTimerPage';
 
-
 function App() {
   return (
     <CartProvider>

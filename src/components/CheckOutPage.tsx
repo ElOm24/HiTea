@@ -138,7 +138,7 @@ function CheckOutPage() {
                 )}
             </div>
             <div className="mx-auto max-w-md flex flex-col gap-4 bg-[#f4e9e1] p-6 rounded shadow-lg w-full mt-4 mb-4">
-                <header className="text-center">Checkout</header>
+                <h1 className="text-center">Checkout</h1>
 
                 <div>
                     <span className="mb-2 font-semibold">Your Order:</span>

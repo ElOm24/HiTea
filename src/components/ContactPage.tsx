@@ -1,222 +1,150 @@
-import { Alert, Button, Card, Label, Modal, Textarea } from "flowbite-react";
-import { Tabs } from "flowbite-react";
-import { useState, useEffect } from "react";
-import { FaStar } from "react-icons/fa";
-import { useUserAuth } from "../context/userAuthContext";
-import { db } from "../libs/firebase";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { useState, useEffect } from 'react'
+import {
+    Alert,
+    Button,
+    Card,
+    Label,
+    Modal,
+    Textarea,
+    Tabs,
+} from 'flowbite-react'
+import { FaStar } from 'react-icons/fa'
+import { useUserAuth } from '../context/userAuthContext'
+import { useRatings } from '../hooks/useRatings'
 
-interface RatingDoc {
-    id: string;
-    userEmail: string;
-    userName: string;
-    rating: number;
-    reviewDescription: string;
-    date: string;
-}
+const locationsData = [
+    {
+        loc: 'Astoria',
+        img: '/astoria.png',
+        addr: 'Semmelweis utca 15',
+        phone: '+36 20 487 0289',
+    },
+    {
+        loc: 'Oktogon',
+        img: '/oktogon.png',
+        addr: 'Chengery utca 15',
+        phone: '+36 20 487 0389',
+    },
+    {
+        loc: 'Buda',
+        img: '/buda.png',
+        addr: 'István utca 15',
+        phone: '+36 20 487 0489',
+    },
+]
 
-function ContactPage() {
-    const { user } = useUserAuth();
+export default function ContactPage() {
+    const { user } = useUserAuth()
+    const { averages, reviewsList, fetchAverages, submitRating, fetchReviews } =
+        useRatings()
 
-    const [openRatingModal, setOpenRatingModal] = useState(false);
-    const [selectedLocation, setSelectedLocation] = useState("");
-    const [selectedRating, setSelectedRating] = useState(0);
-    const [hoveredRating, setHoveredRating] = useState(0);
-    const [reviewDescription, setReviewDescription] = useState("");
-
-    const [openReviewsModal, setOpenReviewsModal] = useState(false);
-    const [reviewsList, setReviewsList] = useState<RatingDoc[]>([]);
-    const [listLocation, setListLocation] = useState("");
-
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-
-    const [averageRatings, setAverageRatings] = useState<{
-        [loc: string]: number;
-    }>({});
-
-    const fetchAverages = async () => {
-        const locs = ["Astoria", "Oktogon", "Buda"];
-        const map: { [loc: string]: number } = {};
-        for (const loc of locs) {
-            const q = query(
-                collection(db, "ratings"),
-                where("location", "==", loc)
-            );
-            const snap = await getDocs(q);
-            const vals = snap.docs.map((d) => (d.data() as any).rating as number);
-            map[loc] = vals.length
-                ? vals.reduce((a, b) => a + b, 0) / vals.length
-                : 0;
-        }
-        setAverageRatings(map);
-    };
+    const [openRating, setOpenRating] = useState(false)
+    const [openReviews, setOpenReviews] = useState(false)
+    const [selLoc, setSelLoc] = useState('')
+    const [selRating, setSelRating] = useState(0)
+    const [hoverRating, setHoverRating] = useState(0)
+    const [desc, setDesc] = useState('')
+    const [showSuccess, setShowSuccess] = useState(false)
 
     useEffect(() => {
-        fetchAverages();
-    }, []);
-
-    const handleRateClick = (loc: string) => {
-        setSelectedLocation(loc);
-        setSelectedRating(0);
-        setHoveredRating(0);
-        setReviewDescription("");
-        setOpenRatingModal(true);
-    };
-
-    const handleSubmitRating = async () => {
-        if (!user || !selectedLocation || selectedRating === 0) return;
-        try {
-            await addDoc(collection(db, "ratings"), {
-                location: selectedLocation,
-                rating: selectedRating,
-                reviewDescription,
-                date: new Date().toISOString(),
-                userEmail: user.email,
-                userName: user.displayName || "Anonymous",
-            });
-            setOpenRatingModal(false);
-            setShowSuccessAlert(true);
-            await fetchAverages();
-            setTimeout(() => setShowSuccessAlert(false), 4000);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const handleSeeReviews = async (loc: string) => {
-        setListLocation(loc);
-        setOpenReviewsModal(true);
-
-        const q = query(
-            collection(db, "ratings"),
-            where("location", "==", loc)
-        );
-        const snap = await getDocs(q);
-
-        const docs: RatingDoc[] = snap.docs.map((d) => {
-            const data = d.data() as any;
-            return {
-                id: d.id,
-                userEmail: data.userEmail,
-                userName: data.userName,
-                rating: data.rating,
-                reviewDescription: data.reviewDescription,
-                date: data.date,
-            };
-        });
-
-        docs.sort((a, b) => {
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
-
-        setReviewsList(docs);
-    };
+        fetchAverages(locationsData.map(d => d.loc))
+    }, [fetchAverages])
 
     const renderStars = (
         value: number,
-        setter: (v: number) => void,
-        hoverSetter?: (v: number) => void
+        onClick: (v: number) => void,
+        onHover?: (v: number) => void
     ) => (
         <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((val) => (
+            {[1, 2, 3, 4, 5].map(val => (
                 <button
                     key={val}
-                    type="button"
-                    onClick={() => setter(val)}
-                    onMouseEnter={() => hoverSetter?.(val)}
-                    onMouseLeave={() => hoverSetter?.(0)}
+                    onClick={() => onClick(val)}
+                    onMouseEnter={() => onHover?.(val)}
+                    onMouseLeave={() => onHover?.(0)}
                 >
                     <FaStar
                         size={22}
                         className={
-                            (hoveredRating || value) >= val
-                                ? "text-yellow-400"
-                                : "text-gray-300"
+                            (hoverRating || value) >= val ? 'text-yellow-400' : 'text-gray-300'
                         }
                     />
                 </button>
             ))}
         </div>
-    );
+    )
+
+    const startRating = (loc: string) => {
+        setSelLoc(loc)
+        setSelRating(0)
+        setHoverRating(0)
+        setDesc('')
+        setOpenRating(true)
+    }
+
+    const handleSubmit = async () => {
+        if (!user || selRating === 0) return
+        await submitRating(
+            selLoc,
+            selRating,
+            desc,
+            user.email!,
+            user.displayName || 'Anonymous'
+        )
+        setOpenRating(false)
+        setShowSuccess(true)
+        setTimeout(() => setShowSuccess(false), 4000)
+    }
+
+    const handleSee = async (loc: string) => {
+        setSelLoc(loc)
+        await fetchReviews(loc)
+        setOpenReviews(true)
+    }
 
     return (
         <div className="main-background">
-            {showSuccessAlert && (
-                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md">
-                    <Alert
-                        color="success"
-                        onDismiss={() => setShowSuccessAlert(false)}
-                    >
+            {showSuccess && (
+                <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+                    <Alert color="success" onDismiss={() => setShowSuccess(false)}>
                         Thanks for your feedback! ⭐️
                     </Alert>
                 </div>
             )}
 
-            <header className="text-center text-2xl my-4">Our Restaurants</header>
-            <main className="w-2/5 mx-auto">
-                <Tabs>
-                    {[
-                        {
-                            loc: "Astoria",
-                            img: "/astoria.png",
-                            addr: "Semmelweis utca 15",
-                            phone: "+36204870289",
-                        },
-                        {
-                            loc: "Oktogon",
-                            img: "/oktogon.png",
-                            addr: "Chengery utca 15",
-                            phone: "+36204870389",
-                        },
-                        {
-                            loc: "Buda",
-                            img: "/buda.png",
-                            addr: "Istvan utca 15",
-                            phone: "+36204870489",
-                        },
-                    ].map(({ loc, img, addr, phone }) => (
+            <h1 className="text-center text-2xl font-semibold">Our Restaurants</h1>
+            <main className="w-full sm:w-4/5 md:w-3/5 lg:w-2/5 mx-auto px-4">
+                <Tabs className="mt-3">
+                    {locationsData.map(({ loc, img, addr, phone }) => (
                         <Tabs.Item key={loc} title={<span>{loc}</span>}>
-
-                            <Card className="max-w-xl mx-auto my-4 bg-[#f4e9e1]">
-                                <img src={img} alt={loc} className="mb-2" />
+                            <Card className="max-w-xl mx-auto my-4 bg-[#f4e9e1] text-[#362314]">
+                                <img src={img} alt={loc} className="" />
                                 <p>
                                     <span>Address:</span> {addr}
                                 </p>
                                 <p>
                                     <span>Phone:</span> {phone}
                                 </p>
-                                <div className="my-2 flex items-center gap-2">
-                                    {Array.from({ length: 5 }, (_, i) => (
-                                        <FaStar
-                                            key={i}
-                                            className={
-                                                averageRatings[loc] >= i + 1
-                                                    ? "text-yellow-400"
-                                                    : "text-gray-300"
-                                            }
-                                        />
-                                    ))}
-                                    <span>({(averageRatings[loc] ?? 0).toFixed(1)})</span>
 
+                                <div className="my-2 flex items-center gap-2">
+                                    {renderStars(averages[loc] ?? 0, () => { }, () => { })}
+                                    <span>({(averages[loc] ?? 0).toFixed(1)})</span>
                                 </div>
+
                                 <div className="flex gap-4">
                                     <Button
-                                        className="my-pretty-button"
-                                        onClick={() => handleRateClick(loc)}
+                                        onClick={() => startRating(loc)}
                                         disabled={!user}
+                                        className="my-pretty-button"
                                     >
-
-                                        <span className="text-[#f4e9e1]"> Leave a review </span>
+                                        <span className="text-[#f4e9e1]"> Leave a review</span>
                                     </Button>
                                     <Button
                                         color="link"
-                                        type="button"
-                                        onClick={() => handleSeeReviews(loc)}
-                                        className="my-button self-center"
-
+                                        onClick={() => handleSee(loc)}
+                                        className="my-button"
                                     >
-
-                                        <span className="text-[#f4e9e1]"> See reviews </span>
+                                        <span className="text-[#f4e9e1]">See reviews</span>
                                     </Button>
                                 </div>
                             </Card>
@@ -225,87 +153,56 @@ function ContactPage() {
                 </Tabs>
             </main>
 
-            <Modal
-                show={openRatingModal}
-                onClose={() => setOpenRatingModal(false)}
-            >
-                <Modal.Header>
-                    <span>Rate {selectedLocation}</span>
-                </Modal.Header>
+            <Modal show={openRating} onClose={() => setOpenRating(false)}>
+                <Modal.Header> <span>Rate {selLoc}</span></Modal.Header>
                 <Modal.Body>
-                    <div className="flex flex-col items-center gap-4">
-                        <Label>
-                            <span>How was your experience at {selectedLocation}?</span>
-                        </Label>
-                        {renderStars(
-                            selectedRating,
-                            setSelectedRating,
-                            setHoveredRating
-                        )}
+                    <div className='flex flex-col items-center gap-4'>
+                        <Label> <span className="text-[#362314]">How was your experience at {selLoc}?</span></Label>
+                        {renderStars(selRating, setSelRating, setHoverRating)}
                         <Textarea
-                            placeholder="Write a short review..."
-                            value={reviewDescription}
-                            onChange={(e) =>
-                                setReviewDescription(e.target.value)
-                            }
-                            className="focus:outline-none focus:ring-0"
+                            placeholder="Write a short review…"
+                            value={desc}
+                            onChange={e => setDesc(e.target.value)}
                         />
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        className="my-pretty-button"
-                        onClick={handleSubmitRating} disabled={selectedRating === 0}>
-                        <span className="text-[#f4e9e1]"> Submit </span>
+                        className='my-pretty-button'
+                        onClick={handleSubmit} disabled={selRating === 0}>
+                        <span className='text-[#f4e9e1]'>Submit</span>
                     </Button>
                 </Modal.Footer>
             </Modal>
 
-            <Modal
-                show={openReviewsModal}
-                onClose={() => setOpenReviewsModal(false)}
-                size="xl"
-            >
-                <Modal.Header>
-                    <span>Reviews for {listLocation}</span>
-                </Modal.Header>
-
-                <Modal.Body className="max-h-96 overflow-y-auto space-y-4 text-[#362314]">
+            <Modal show={openReviews} onClose={() => setOpenReviews(false)} size="xl">
+                <Modal.Header> <span>Reviews for {selLoc}</span></Modal.Header>
+                <Modal.Body>
                     {reviewsList.length === 0 ? (
                         <p>No reviews yet.</p>
                     ) : (
-                        reviewsList.map((r) => (
-                            <Card key={r.id} className="bg-white">
-                                <p className="text-[#362314] font-semibold">{r.userName}</p>
-                                <div className="flex items-center gap-1 my-1">
-                                    {Array.from({ length: 5 }, (_, i) => (
-                                        <FaStar
-                                            key={i}
-                                            className={
-                                                i < r.rating ? "text-yellow-400" : "text-gray-300"
-                                            }
-                                        />
-                                    ))}
+                        reviewsList.map(r => (
+                            <Card key={r.id} className="mb-4">
+                                <p className="font-semibold">{r.userName}</p>
+                                <div className="flex gap-1 my-1">
+                                    {renderStars(r.rating, () => { })}
                                 </div>
                                 <p>{r.reviewDescription}</p>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-500">
                                     {new Date(r.date).toLocaleString()}
                                 </p>
                             </Card>
                         ))
                     )}
                 </Modal.Body>
-
                 <Modal.Footer>
                     <Button
-                        className="my-button"
-                        onClick={() => setOpenReviewsModal(false)}
-                    >
+                        className='my-button'
+                        onClick={() => setOpenReviews(false)}>
                         <span className="text-[#f4e9e1]">Close</span>
                     </Button>
                 </Modal.Footer>
             </Modal>
-
         </div>
-    );
-} export default ContactPage;
+    )
+}

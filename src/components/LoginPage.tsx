@@ -6,7 +6,6 @@ import { HiInformationCircle } from "react-icons/hi";
 import { AuthError } from "firebase/auth";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 
-
 function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -75,7 +74,7 @@ function LoginPage() {
                 )}
             </div>
 
-            <header>Login</header>
+            <h1>Login</h1>
 
             <div className="self-center mt-3 mb-3">
                 <Button

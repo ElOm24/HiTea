@@ -3,7 +3,7 @@ import { Timeline } from "flowbite-react";
 function AboutUsPage() {
     return (
         <main className="main-background">
-            <header>Our Story</header>
+            <h1>Our Story</h1>
             <div className="container flex flex-col flex-grow items-center mx-auto mb-2">
                 <Timeline className="w-2/4 pt-4">
                     <Timeline.Item className="!text-[#362314]">

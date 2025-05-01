@@ -109,9 +109,7 @@ function UserPage() {
     return (
         <main className="main-background min-h-screen p-4">
             <div className="max-w-5xl mx-auto">
-                <header className="mb-6 text-center text-2xl font-semibold">
-                    Profile
-                </header>
+                <h1>Profile</h1>
 
                 {showAlert && (
                     <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md">

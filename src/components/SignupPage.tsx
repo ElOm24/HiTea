@@ -80,14 +80,13 @@ function SignupPage() {
 
     return (
         <main className="main-background">
-            <header className="mb-6">Sign Up</header>
-
+            <h1 className="mb-6">Sign Up</h1>
             {emailSent ? (
-                <div className="bg-green-100 border border-green-300 text-green-900 p-6 rounded-lg shadow-md w-full max-w-md text-center">
-                    <h2 className="text-lg font-semibold mb-2">Please check your verification email.</h2>
+                <div className="bg-[#e4d4c8] text-[#523a28] p-6 rounded-lg shadow-md w-full max-w-md text-center">
+                    <h2 className="text-lg font-semibold mb-2 text-[#523a28]">Please check your verification email.</h2>
                     <p className="mb-4">We’ve sent a verification link to <span className="font-medium">{email}</span>.</p>
-                    <Button color="success" onClick={handleLogin}>
-                        Go to Login
+                    <Button color="success" onClick={handleLogin} className="my-pretty-button">
+                        <span className="text-[#e4d4c8]">Go to Login</span>
                     </Button>
                 </div>
             ) : (

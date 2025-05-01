@@ -3,8 +3,8 @@ import { Carousel } from "flowbite-react";
 function Home() {
   return (
     <main className="main-background">
-      <header>Welcome to HiTea!</header>
-      <h1 className="pt-5 pb-4">Current special offers:</h1>
+      <h1>Welcome to HiTea!</h1>
+      <h2 className="pt-5 pb-4">Current special offers:</h2>
       <div className="w-[60%] mx-auto h-80">
         <Carousel>
           <img src="../assets/offer1.png" alt="offer1" />

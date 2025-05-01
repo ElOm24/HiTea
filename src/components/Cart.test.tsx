@@ -1,9 +1,8 @@
 import '@testing-library/jest-dom';
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
 import { within } from "@testing-library/react";
-
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { BrowserRouter } from "react-router-dom";
 import Cart from "./Cart";
 
 const mockClearCart = vi.fn();

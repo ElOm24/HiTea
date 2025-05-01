@@ -23,10 +23,16 @@ span {
     color: #362314;
 }
 
-h1,
 h2,
 h3 {
     color: #362314;
+}
+
+h1 {
+    color: #362314;
+    font-weight: 600;
+    font-size: 19px;
+    margin-top: 2rem;
 }
 
 button:focus {
@@ -35,11 +41,23 @@ button:focus {
 }
 
 input:focus {
-    outline: none;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 input[type=text]:focus {
-    outline: none;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input[type=email]:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input[type=password]:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 input[type="radio"]:focus {

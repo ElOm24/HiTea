@@ -5,7 +5,7 @@ function Foot() {
     return (
         <Footer container className="bg-[#523a28] rounded-none rounded-t">
             <div className="w-full">
-                <div className="w-full sm:flex sm:items-center sm:justify-between text-[#e4d4c8]">
+                <div className="w-full flex items-center justify-between text-[#e4d4c8]">
                     <p className="text-[#e4d4c8] text-sm">© 2022 HiTea</p>
                     <div className="flex space-x-6 sm:justify-center">
                         <Footer.Icon href="https://www.facebook.com/elina.omurkulova.73" icon={BsFacebook} className="text-[#e4d4c8] hover:text-[#a47551]" />

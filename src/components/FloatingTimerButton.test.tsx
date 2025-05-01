@@ -57,10 +57,3 @@ describe('FloatingTimerButton', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/delivery-timer');
     });
 });
-
-
-/*
-Integration test that checks if the FloatingTimerButton:
-shows/hides based on localStorage
-and correctly redirects the user when clicked.
-*/

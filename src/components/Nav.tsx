@@ -2,7 +2,6 @@ import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { useLocation } from "react-router-dom";
 import { useUserAuth } from "../context/userAuthContext";
 import { useNavigate } from "react-router-dom";
-import { onIdTokenChanged } from "firebase/auth";
 
 function Nav() {
     const { user, logOut } = useUserAuth();

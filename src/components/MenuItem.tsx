@@ -9,7 +9,7 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 interface Props {
     firestoreId: string;
     id: string;
-    preparationTime: number;
+    preparationTime?: number;
     ProductName: string;
     Price: number;
     description: string;
@@ -172,16 +172,16 @@ function MenuItem({
                         <div className="flex items-center gap-4 mt-1">
                             <button
                                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                                className="rounded-full bg-[#d4c4b3] p-2 hover:bg-[#b9a797] transition"
+                                className="rounded-full bg-[#a47551] p-2 hover:bg-[#d0b49f] transition"
                             >
-                                <FaMinus />
+                                <FaMinus className="text-[#e4d4c8]" />
                             </button>
                             <span className="text-lg font-semibold">{quantity}</span>
                             <button
                                 onClick={() => setQuantity(prev => prev + 1)}
-                                className="rounded-full bg-[#d4c4b3] p-2 hover:bg-[#b9a797] transition"
+                                className="rounded-full bg-[#a47551] p-2 hover:bg-[#d0b49f] transition"
                             >
-                                <FaPlus />
+                                <FaPlus className="text-[#e4d4c8]" />
                             </button>
                         </div>
                     </div>

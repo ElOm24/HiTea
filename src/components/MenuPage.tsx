@@ -1,110 +1,75 @@
-import { useEffect, useState } from "react";
-import { useUserAuth } from '../context/userAuthContext';
-import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../libs/firebase";
-import { Button, Label, Textarea, TextInput } from "flowbite-react";
-import Cart from "./Cart";
-import MenuItem from "./MenuItem";
-import FloatingTimerButton from "../components/FloatingTimerButton";
+import { useState } from 'react'
+import { useUserAuth } from '../context/userAuthContext'
+import { Button, Label, Textarea, TextInput } from 'flowbite-react'
+import { useMenuData, MenuItem as MenuItemType } from '../hooks/useMenuData'
+import Cart from './Cart'
+import MenuItem from './MenuItem'
+import FloatingTimerButton from './FloatingTimerButton'
 
 function MenuPage() {
-  const { isAdmin } = useUserAuth();
-  const [menuItems, setMenuItems] = useState<any[]>([]);
-  const [showDialog, setShowDialog] = useState(false);
-  const [editing, setEditing] = useState(false);
+  const { isAdmin } = useUserAuth()
+  const { menuItems, addMenuItem, updateMenuItem, deleteMenuItem } = useMenuData()
 
-  const [newItem, setNewItem] = useState({
-    firestoreId: "",
-    id: "",
-    ProductName: "",
-    Price: "",
-    description: "",
-  });
+  const [showDialog, setShowDialog] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editId, setEditId] = useState<string>('')
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "menu"));
-      const items = querySnapshot.docs.map(doc => ({
-        firestoreId: doc.id,
-        ...doc.data(),
-      }));
-      setMenuItems(items);
-    };
-    fetchData();
-  }, []);
+  const [form, setForm] = useState<Omit<MenuItemType, 'firestoreId'>>({
+    id: '',
+    ProductName: '',
+    Price: 0,
+    description: '',
+  })
 
-  const handleAddItem = async () => {
+  const openAdd = () => {
+    setForm({ id: '', ProductName: '', Price: 0, description: '' })
+    setEditing(false)
+    setShowDialog(true)
+  }
+
+  const openEdit = (item: MenuItemType) => {
+    setForm({
+      id: item.id,
+      ProductName: item.ProductName,
+      Price: item.Price,
+      description: item.description,
+    })
+    setEditId(item.firestoreId)
+    setEditing(true)
+    setShowDialog(true)
+  }
+
+  const handleSave = async () => {
     try {
       if (editing) {
-        await updateDoc(doc(db, "menu", newItem.firestoreId), {
-          id: newItem.id,
-          ProductName: newItem.ProductName,
-          Price: newItem.Price,
-          description: newItem.description,
-        });
-
-        setMenuItems(prev =>
-          prev.map(item =>
-            item.firestoreId === newItem.firestoreId ? { ...item, ...newItem } : item
-          )
-        );
+        await updateMenuItem(editId, form)
       } else {
-        const docRef = await addDoc(collection(db, "menu"), {
-          id: newItem.id,
-          ProductName: newItem.ProductName,
-          Price: newItem.Price,
-          description: newItem.description,
-        });
-
-        setMenuItems(prev => [
-          ...prev,
-          { ...newItem, firestoreId: docRef.id }
-        ]);
+        await addMenuItem(form)
       }
-
-      setShowDialog(false);
-      setNewItem({ firestoreId: "", id: "", ProductName: "", Price: "", description: "" });
-      setEditing(false);
-    } catch (error) {
-      console.error("Error adding/updating item: ", error);
+      setShowDialog(false)
+    } catch (err) {
+      console.error('Error saving menu item:', err)
     }
-  };
-
-  const handleEdit = (item: any) => {
-    setNewItem(item);
-    setEditing(true);
-    setShowDialog(true);
-  };
+  }
 
   const handleDelete = async (firestoreId: string) => {
     try {
-      await deleteDoc(doc(db, "menu", firestoreId));
-      setMenuItems(prev => prev.filter(item => item.firestoreId !== firestoreId));
-    } catch (error) {
-      console.error("Error deleting item: ", error);
+      await deleteMenuItem(firestoreId)
+    } catch (err) {
+      console.error('Error deleting menu item:', err)
     }
-  };
+  }
 
   return (
     <div className="main-background">
-      <header className="flex justify-center"> {isAdmin ? "View: Admin" : "Menu"} </header>
+      <h1 className="flex justify-center">
+        {isAdmin ? 'View: Admin' : 'Menu'}
+      </h1>
 
       {isAdmin && (
         <div className="flex justify-center mt-6">
-          <Button
-            onClick={() => {
-              setShowDialog(true);
-              setEditing(false);
-              setNewItem({ firestoreId: "", id: "", ProductName: "", Price: "", description: "" });
-            }}
-            className="my-button"> <span className="text-[#f4e9e1]">Add Bubble Tea</span>
+          <Button onClick={openAdd} className="my-button">
+            <span className="text-[#f4e9e1]">Add Bubble Tea</span>
           </Button>
         </div>
       )}
@@ -112,66 +77,69 @@ function MenuPage() {
       {showDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-[#e4d4c8] p-6 rounded-md w-[400px] shadow-lg">
-            <h2 className="text-lg font-semibold mb-4 self-center text-[#362314]">{editing ? "Edit" : "Add"} Bubble Tea</h2>
+            <h2 className="text-lg font-semibold mb-4 text-[#362314]">
+              {editing ? 'Edit' : 'Add'} Bubble Tea
+            </h2>
             <Label className="p-2 text-[#362314]">Image id</Label>
             <TextInput
-              placeholder="Image ID (e.g., 1, 2)"
-              className="p-2 w-full mb-2 text-[#362314]"
-              value={newItem.id}
-              onChange={(e) => setNewItem({ ...newItem, id: e.target.value })}
+              placeholder="Image ID"
+              className="mb-2"
+              value={form.id}
+              onChange={e => setForm(f => ({ ...f, id: e.target.value }))}
             />
 
             <Label className="p-2 text-[#362314]">Product name</Label>
             <TextInput
               placeholder="Product name"
-              className="p-2 w-full mb-2 text-[#362314]"
-              value={newItem.ProductName}
-              onChange={(e) => setNewItem({ ...newItem, ProductName: e.target.value })}
+              className="mb-2"
+              value={form.ProductName}
+              onChange={e =>
+                setForm(f => ({ ...f, ProductName: e.target.value }))
+              }
             />
 
             <Label className="p-2 text-[#362314]">Price</Label>
             <TextInput
               placeholder="Price"
-              className="p-2 w-full mb-2"
-              value={newItem.Price}
-              onChange={(e) => setNewItem({ ...newItem, Price: e.target.value })}
+              className="mb-2"
+              value={form.Price}
+              onChange={e =>
+                setForm(f => ({ ...f, Price: Number(e.target.value) }))
+              }
             />
 
             <Label className="p-2 text-[#362314]">Description</Label>
-            <Textarea id="large"
+            <Textarea
               placeholder="Description"
-              className="p-2 mb-4 ml-2"
-              value={newItem.description}
-              onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+              className="mb-4"
+              value={form.description}
+              onChange={e =>
+                setForm(f => ({ ...f, description: e.target.value }))
+              }
             />
 
             <div className="flex justify-end gap-2">
-              <Button
-                onClick={() => setShowDialog(false)}
-                className="my-button"
-              >
+              <Button onClick={() => setShowDialog(false)} className="my-button">
                 <span className="text-[#f4e9e1]">Cancel</span>
               </Button>
-              <Button
-                onClick={handleAddItem}
-                className="my-pretty-button"
-              >
-
-                {editing ? <span className="text-[#f4e9e1]">Save Changes</span> : <span className="text-[#f4e9e1]">Add</span>}
+              <Button onClick={handleSave} className="my-pretty-button">
+                <span className="text-[#f4e9e1]">
+                  {editing ? 'Save Changes' : 'Add'}
+                </span>
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      <main className='mb-[45px]'>
+      <main className="mb-[45px]">
         <div className="container mx-auto px-4 mt-8 flex flex-wrap gap-4 justify-center">
-          {menuItems.map((item) => (
+          {menuItems.map(item => (
             <div className="max-w-sm" key={item.firestoreId}>
               <MenuItem
                 {...item}
                 isAdmin={isAdmin}
-                onEdit={handleEdit}
+                onEdit={() => openEdit(item)}
                 onDelete={() => handleDelete(item.firestoreId)}
               />
             </div>
@@ -182,7 +150,7 @@ function MenuPage() {
         <FloatingTimerButton />
       </main>
     </div>
-  );
+  )
 }
 
-export default MenuPage;
+export default MenuPage

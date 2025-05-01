@@ -65,7 +65,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         );
     };
 
-
     return (
         <CartContext.Provider value={{ cartItems, addToCart, clearCart, increaseQuantity, decreaseQuantity }}>
             {children}
@@ -75,6 +74,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
 export function useShoppingCart() {
     const context = useContext(CartContext);
-    if (!context) throw new Error("Must be used inside CartProvider"); //check
+    if (!context) throw new Error("Must be used inside CartProvider");
     return context;
 }

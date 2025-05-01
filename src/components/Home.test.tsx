@@ -16,7 +16,7 @@ describe('Home component', () => {
         render(<Home />)
         expect(screen.getByText('Welcome to HiTea!')).toBeInTheDocument()
         expect(
-            screen.getByRole('heading', { level: 1, name: /current special offers:/i })
+            screen.getByRole('heading', { level: 2, name: /current special offers:/i })
         ).toBeInTheDocument()
     })
 
